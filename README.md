@@ -1,1 +1,1 @@
-Tentativa de criar um decodificador para o HRIT do GOES 16. **Não garanto esse projeto ir para frente**.
+Tentativa de criar um decodificador para o HRIT do GOES 16. **Não garanto desse projeto ir para frente**.
