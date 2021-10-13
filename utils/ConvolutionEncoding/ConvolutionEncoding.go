@@ -18,7 +18,7 @@ type ConvolutionEncoding struct {
 // - `polinomials` diz respeito aos polinômios geradores.
 //
 // A razão de codificação (r) é dada pela quantidade de polinômios.
-func NewConvolutionEncoding8(k uint8, polinomials []byte) (*ConvolutionEncoding, error) {
+func NewConvolutionEncoding(k uint8, polinomials []byte) (*ConvolutionEncoding, error) {
 	if k > 8 {
 		return &ConvolutionEncoding{}, errors.New("'k' deve ser menor ou igual a 8")
 	}

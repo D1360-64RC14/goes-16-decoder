@@ -61,16 +61,16 @@ type Result struct {
 	ShoudFail   bool
 }
 
-func TestNewConvolutionEncoding8(t *testing.T) {
-	testConv, err := NewConvolutionEncoding8(3, testPolys)
+func TestNewConvolutionEncoding(t *testing.T) {
+	testConv, err := NewConvolutionEncoding(3, testPolys)
 	if err != nil {
 		t.Fatal(err)
 	}
-	goesConv, err := NewConvolutionEncoding8(7, goesPolys)
+	goesConv, err := NewConvolutionEncoding(7, goesPolys)
 	if err != nil {
 		t.Fatal(err)
 	}
-	goesConvErr, err := NewConvolutionEncoding8(7, goesPolys)
+	goesConvErr, err := NewConvolutionEncoding(7, goesPolys)
 	if err != nil {
 		t.Fatal(err)
 	}
