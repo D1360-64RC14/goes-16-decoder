@@ -58,3 +58,19 @@ func TestConvolutionStep_goesErr(t *testing.T) {
 		}
 	}
 }
+
+func BenchmarkConvolutionStep_test(b *testing.B) {
+	buffer := byte(0b000)
+
+	for i := 0; i < b.N; i++ {
+		ConvolutionStep(&buffer, byte(i), testPolys, 3)
+	}
+}
+
+func BenchmarkConvolutionStep_goes(b *testing.B) {
+	buffer := byte(0b0000000)
+
+	for i := 0; i < b.N; i++ {
+		ConvolutionStep(&buffer, byte(i), goesPolys, 7)
+	}
+}

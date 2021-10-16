@@ -64,3 +64,25 @@ func TestNewConvolutionEncoding_goesErr(t *testing.T) {
 		}
 	}
 }
+
+func BenchmarkNewConvolutionEncoding_test(b *testing.B) {
+	testConv, err := NewConvolutionEncoding(3, testPolys)
+	if err != nil {
+		b.Fatal(err)
+	}
+
+	for i := 0; i < b.N; i++ {
+		testConv.SendBit(byte(i))
+	}
+}
+
+func BenchmarkNewConvolutionEncoding_goes(b *testing.B) {
+	goesConv, err := NewConvolutionEncoding(3, goesPolys)
+	if err != nil {
+		b.Fatal(err)
+	}
+
+	for i := 0; i < b.N; i++ {
+		goesConv.SendBit(byte(i))
+	}
+}
