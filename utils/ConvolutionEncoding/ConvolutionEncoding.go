@@ -7,31 +7,31 @@ import (
 type ConvolutionEncoding struct {
 	buffer        byte
 	k             uint8
-	polinomials []byte
+	polynomials []byte
 }
 
 // NewConvolutionEncoding8 cria uma instância de convolução de até 8 bits.
 //
 // - `k` diz respeito à quantidade de bits do buffer.
 //
-// - `polinomials` diz respeito aos polinômios geradores.
+// - `polynomials` diz respeito aos polinômios geradores.
 //
 // A razão de codificação (r) é dada pela quantidade de polinômios.
-func NewConvolutionEncoding(k uint8, polinomials []byte) (*ConvolutionEncoding, error) {
+func NewConvolutionEncoding(k uint8, polynomials []byte) (*ConvolutionEncoding, error) {
 	if k > 8 {
 		return &ConvolutionEncoding{}, errors.New("'k' deve ser menor ou igual a 8")
 	}
 
 	// Filtra todos os polinômios para terem
 	// a quantidade correta de bits (k).
-	for index := range polinomials {
-		polinomials[index] = bitFill(k) & polinomials[index]
+	for index := range polynomials {
+		polynomials[index] = bitFill(k) & polynomials[index]
 	}
 
 	return &ConvolutionEncoding{
 		buffer:      byte(0),
 		k:           k,
-		polinomials: polinomials,
+		polynomials: polynomials,
 	}, nil
 }
 
@@ -47,8 +47,8 @@ func (ce *ConvolutionEncoding) SendBit(bit byte) []byte {
 	ce.buffer = ce.buffer >> 1
 	ce.buffer = ce.buffer | (0b1 & bit) << (ce.k - 1)
 
-	andSum := make([]byte, len(ce.polinomials))
-	for index, poly := range ce.polinomials {
+	andSum := make([]byte, len(ce.polynomials))
+	for index, poly := range ce.polynomials {
 		andSum[index] = sumByte(poly & ce.buffer)
 	}
 	
