@@ -1,7 +1,6 @@
 package convolutionencoding
 
 import (
-	"bytes"
 	"errors"
 )
 
@@ -25,8 +24,8 @@ func NewConvolutionEncoding(k uint8, polinomials []byte) (*ConvolutionEncoding, 
 
 	// Filtra todos os polinômios para terem
 	// a quantidade correta de bits (k).
-	for i := 0; i < len(polinomials); i++ {
-		polinomials[i] = bitFill(k) & polinomials[i]
+	for index := range polinomials {
+		polinomials[index] = bitFill(k) & polinomials[index]
 	}
 
 	return &ConvolutionEncoding{
@@ -35,7 +34,6 @@ func NewConvolutionEncoding(k uint8, polinomials []byte) (*ConvolutionEncoding, 
 		polinomials: polinomials,
 	}, nil
 }
-
 
 func (ce *ConvolutionEncoding) SetBuffer(newBuffer byte) {
 	newBuffer = bitFill(ce.k) & newBuffer
@@ -49,13 +47,12 @@ func (ce *ConvolutionEncoding) SendBit(bit byte) []byte {
 	ce.buffer = ce.buffer >> 1
 	ce.buffer = ce.buffer | (0b1 & bit) << (ce.k - 1)
 
-	andSummed := bytes.Map(func(poly rune) rune {
-		and := byte(poly) & ce.buffer
-		sum := sumByte(and)
-		return rune(sum)
-	}, ce.polinomials)
+	andSum := make([]byte, len(ce.polinomials))
+	for index, poly := range ce.polinomials {
+		andSum[index] = sumByte(poly & ce.buffer)
+	}
 	
-	return andSummed
+	return andSum
 }
 
 // bitFill cria um byte preenchido com uma quantidade de bits 1.
@@ -74,7 +71,7 @@ func bitFill(length uint8) byte {
 	// }
 
 	// return
-	LUT := []byte{
+	LUT := [9]byte{
 		0b00000000,
 		0b00000001,
 		0b00000011,
@@ -107,7 +104,7 @@ func sumByte(data byte) byte {
 	// 	result = result + readBitPosition(data, i)
 	// }
 	// return 0b1 & result
-	LUT := []byte{
+	LUT := [255]byte{
 		0, 1, 1, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 1, 1, 0, 1, 0, 0, 1,
 		0, 1, 1, 0, 0, 1, 1, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 1, 1, 0,
 		0, 1, 1, 0, 1, 0, 0, 1, 0, 1, 1, 0, 1, 0, 0, 1, 1, 0, 0, 1,

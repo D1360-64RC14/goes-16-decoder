@@ -8,14 +8,14 @@ func ConvolutionStep(buffer *byte, nextBit byte, polinomials []byte, k int) []by
 	*buffer = *buffer >> 1
 	*buffer = *buffer | (nextBit << (k - 1))
 
-	limitPolinomialsByK(&polinomials, k)
-	return andSumPolynomials(buffer, &polinomials)
+	limitPolinomialsByK(polinomials, k)
+	return andSumPolynomials(*buffer, polinomials)
 }
 
 // limitPolinomialsByK limita o tamanho dos polinômio de acordo com a quantidade de bits (k).
-func limitPolinomialsByK(polynomials *[]byte, limit int) {
-	for index := range *polynomials {
-		(*polynomials)[index] &= byteFill(limit)
+func limitPolinomialsByK(polynomials []byte, limit int) {
+	for index := range polynomials {
+		polynomials[index] &= byteFill(limit)
 	}
 }
 
@@ -26,7 +26,7 @@ func byteFill(qnt int) byte {
 	// 	result |= 1 << i
 	// }
 	// return
-	LUT := []byte{
+	LUT := [9]byte{
 		0b00000000,
 		0b00000001,
 		0b00000011,
@@ -41,11 +41,11 @@ func byteFill(qnt int) byte {
 }
 
 // andSumPolynomials executa as operações retornando o resultado final.
-func andSumPolynomials(buffer *byte, polinomials *[]byte) (result []byte) {
-	result = make([]byte, len(*polinomials))
+func andSumPolynomials(buffer byte, polinomials []byte) (result []byte) {
+	result = make([]byte, len(polinomials))
 
-	for index, poly := range *polinomials {
-		result[index] = poly & *buffer
+	for index, poly := range polinomials {
+		result[index] = poly & buffer
 		result[index] = xorByte(result[index])
 	}
 	return
@@ -58,7 +58,7 @@ func xorByte(data byte) byte {
 	// 	result ^= 1 & (data >> i)
 	// }
 	// return
-	LUT := []byte{
+	LUT := [255]byte{
 		0, 1, 1, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 1, 1, 0, 1, 0, 0, 1,
 		0, 1, 1, 0, 0, 1, 1, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 1, 1, 0,
 		0, 1, 1, 0, 1, 0, 0, 1, 0, 1, 1, 0, 1, 0, 0, 1, 1, 0, 0, 1,
